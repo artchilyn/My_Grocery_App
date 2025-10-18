@@ -1,0 +1,30 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "My Grocery App (Debug Mode)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "debug",
+      "cwd": "${workspaceFolder}",
+      "toolArgs": []
+    },
+    {
+      "name": "My Grocery App (Release Mode)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "release",
+      "cwd": "${workspaceFolder}"
+    },
+    {
+      "name": "My Grocery App (Profile Mode)",
+      "type": "dart",
+      "request": "launch",
+      "program": "lib/main.dart",
+      "flutterMode": "profile",
+      "cwd": "${workspaceFolder}"
+    }
+  ]
+}
