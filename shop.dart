@@ -66,12 +66,9 @@ class _ShopState extends State<Shop> {
   };
 
   void _addItemToCart(BuildContext context, Map<String, dynamic> item) {
-    final cart = Provider.of<CartModel>(context, listen: false);
-    cart.addItem(item);
+    Provider.of<CartModel>(context, listen: false).addItem(item);
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-          content: Text('${item['name']} added to cart 🛒'),
-          duration: const Duration(seconds: 2)),
+      SnackBar(content: Text('${item['name']} added to cart 🛒')),
     );
   }
 
@@ -79,178 +76,134 @@ class _ShopState extends State<Shop> {
     int quantity = 1;
     showDialog(
       context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          return AlertDialog(
-            title: Text('Add ${item['name']}'),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildNetworkImage(item['image'], height: 80),
-                const SizedBox(height: 10),
-                Text('₱${item['price']} per kg'),
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                        icon:
-                            const Icon(Icons.remove_circle, color: Colors.red),
-                        onPressed: () {
-                          if (quantity > 1) setState(() => quantity--);
-                        }),
-                    Text('$quantity',
-                        style: const TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
-                    IconButton(
-                        icon: const Icon(Icons.add_circle,
-                            color: Colors.deepPurple),
-                        onPressed: () => setState(() => quantity++)),
-                  ],
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel')),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple),
-                  onPressed: () {
-                    _addItemToCart(context, {
-                      'name': item['name'],
-                      'price': item['price'],
-                      'quantity': quantity,
-                      'image': item['image']
-                    });
-                    Navigator.pop(context);
-                  },
-                  child: const Text('Add to Cart')),
-            ],
-          );
-        });
-      },
-    );
-  }
-
-  Widget _buildNetworkImage(String url, {double? width, double? height}) {
-    return SizedBox(
-      width: width ?? 50,
-      height: height ?? 50,
-      child: Image.network(
-        url,
-        fit: BoxFit.cover,
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return const Center(child: CircularProgressIndicator(strokeWidth: 2));
-        },
-        errorBuilder: (context, error, stackTrace) {
-          
-          print('Image load failed for $url -> $error');
-          return Container(
-            color: Colors.grey[200],
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.image_not_supported, color: Colors.grey, size: 28),
-                SizedBox(height: 4),
-                Text('Image failed',
-                    style: TextStyle(fontSize: 10, color: Colors.grey)),
-              ],
-            ),
-          );
-        },
-      ),
+      builder: (_) => StatefulBuilder(builder: (context, setState) {
+        return AlertDialog(
+          title: Text('Add ${item['name']}'),
+          content: Column(mainAxisSize: MainAxisSize.min, children: [
+            _buildImage(item['image'], h: 80),
+            const SizedBox(height: 10),
+            Text('₱${item['price']} per kg'),
+            const SizedBox(height: 15),
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              IconButton(
+                  icon: const Icon(Icons.remove_circle, color: Colors.red),
+                  onPressed: () => setState(
+                      () => quantity = (quantity > 1) ? quantity - 1 : 1)),
+              Text('$quantity',
+                  style: const TextStyle(
+                      fontSize: 20, fontWeight: FontWeight.bold)),
+              IconButton(
+                  icon: const Icon(Icons.add_circle, color: Colors.deepPurple),
+                  onPressed: () => setState(() => quantity++)),
+            ])
+          ]),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel')),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.deepPurple),
+                onPressed: () {
+                  _addItemToCart(context, {
+                    'name': item['name'],
+                    'price': item['price'],
+                    'quantity': quantity,
+                    'image': item['image']
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Add to Cart')),
+          ],
+        );
+      }),
     );
   }
 
   void _showAddItemDialog(BuildContext context) {
     final nameController = TextEditingController();
     final priceController = TextEditingController();
-    String previewImage = imageMap.values.first; // default
+    String preview = imageMap.values.first;
 
     showDialog(
       context: context,
-      builder: (context) {
-        return StatefulBuilder(builder: (context, setState) {
-          void updatePreview() {
-            final name = nameController.text.trim().toLowerCase();
-            final match = imageMap.entries.firstWhere(
-              (e) => name.contains(e.key),
-              orElse: () => const MapEntry('default',
-                  'https://upload.wikimedia.org/wikipedia/commons/3/3a/Placeholder_view_vector.svg'),
-            );
-            previewImage = match.value;
-            setState(() {});
-          }
-
-          return AlertDialog(
-            title: const Text('Add New Item'),
-            content: SingleChildScrollView(
-              child: Column(
-                children: [
-                  TextField(
-                      controller: nameController,
-                      decoration: const InputDecoration(labelText: 'Item Name'),
-                      onChanged: (_) => updatePreview()),
-                  TextField(
-                      controller: priceController,
-                      decoration: const InputDecoration(labelText: 'Price (₱)'),
-                      keyboardType: TextInputType.number),
-                  const SizedBox(height: 12),
-                  const Align(
-                      alignment: Alignment.centerLeft,
-                      child: Text('Preview:',
-                          style: TextStyle(fontWeight: FontWeight.bold))),
-                  const SizedBox(height: 8),
-                  _buildNetworkImage(previewImage, height: 100, width: 100),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel')),
-              ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff89ea74)),
-                  onPressed: () {
-                    if (nameController.text.isEmpty ||
-                        priceController.text.isEmpty) return;
-                    final name = nameController.text.trim();
-                    final lowerName = name.toLowerCase();
-                    final image = imageMap.entries
-                        .firstWhere((e) => lowerName.contains(e.key),
-                            orElse: () => const MapEntry('default',
-                                'https://upload.wikimedia.org/wikipedia/commons/3/3a/Placeholder_view_vector.svg'))
-                        .value;
-                    setState(() {
-                      groceries.add({
-                        'name': name,
-                        'price': double.tryParse(priceController.text) ?? 0,
-                        'quantity': 1,
-                        'image': image
-                      });
-                    });
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('$name added with automatic image ')));
-                  },
-                  child: const Text('Add')),
-            ],
+      builder: (_) => StatefulBuilder(builder: (context, setDialog) {
+        void updatePreview() {
+          final name = nameController.text.trim().toLowerCase();
+          final match = imageMap.entries.firstWhere(
+            (e) => name.contains(e.key),
+            orElse: () => const MapEntry('default',
+                'https://upload.wikimedia.org/wikipedia/commons/3/3a/Placeholder_view_vector.svg'),
           );
-        });
-      },
+          setDialog(() => preview = match.value);
+        }
+
+        return AlertDialog(
+          title: const Text('Add New Item'),
+          content: Column(mainAxisSize: MainAxisSize.min, children: [
+            TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Item Name'),
+                onChanged: (_) => updatePreview()),
+            TextField(
+                controller: priceController,
+                decoration: const InputDecoration(labelText: 'Price (₱)'),
+                keyboardType: TextInputType.number),
+            const SizedBox(height: 12),
+            _buildImage(preview, h: 100, w: 100),
+          ]),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel')),
+            ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff89ea74)),
+                onPressed: () {
+                  if (nameController.text.isEmpty ||
+                      priceController.text.isEmpty) return;
+                  final name = nameController.text.trim();
+                  final image = imageMap.entries
+                      .firstWhere((e) => name.toLowerCase().contains(e.key),
+                          orElse: () => const MapEntry('default',
+                              'https://upload.wikimedia.org/wikipedia/commons/3/3a/Placeholder_view_vector.svg'))
+                      .value;
+
+                  setState(() {
+                    groceries.add({
+                      'name': name,
+                      'price': double.tryParse(priceController.text) ?? 0,
+                      'quantity': 1,
+                      'image': image
+                    });
+                  });
+
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('$name added successfully ✅')),
+                  );
+                },
+                child: const Text('Add')),
+          ],
+        );
+      }),
     );
   }
 
-  void _deleteItem(int index) {
-    setState(() {
-      groceries.removeAt(index);
-    });
-  }
+  void _deleteItem(int i) => setState(() => groceries.removeAt(i));
+
+  Widget _buildImage(String url, {double? w, double? h}) => SizedBox(
+        width: w ?? 50,
+        height: h ?? 50,
+        child: Image.network(url,
+            fit: BoxFit.cover,
+            loadingBuilder: (c, child, l) => l == null
+                ? child
+                : const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2)),
+            errorBuilder: (_, __, ___) =>
+                const Icon(Icons.image_not_supported, color: Colors.grey)),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -261,19 +214,17 @@ class _ShopState extends State<Shop> {
           actions: [
             IconButton(
                 icon: const Icon(Icons.add),
-                tooltip: 'Add Item',
                 onPressed: () => _showAddItemDialog(context)),
           ]),
       drawer: const AppDrawer(),
       body: ListView.builder(
         itemCount: groceries.length,
-        itemBuilder: (context, index) {
-          final item = groceries[index];
+        itemBuilder: (_, i) {
+          final item = groceries[i];
           return Card(
             margin: const EdgeInsets.all(10),
-            elevation: 3,
             child: ListTile(
-              leading: _buildNetworkImage(item['image'], width: 50, height: 50),
+              leading: _buildImage(item['image']),
               title: Text(item['name'],
                   style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text('₱${item['price']} per kg'),
@@ -284,7 +235,7 @@ class _ShopState extends State<Shop> {
                     onPressed: () => _showQuantityDialog(context, item)),
                 IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteItem(index)),
+                    onPressed: () => _deleteItem(i)),
               ]),
             ),
           );
