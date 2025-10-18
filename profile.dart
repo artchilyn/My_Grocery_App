@@ -21,7 +21,7 @@ class Profile extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // 🥦 Curved vegetable background header
+            
             ClipPath(
               clipper: BottomCurveClipper(),
               child: Container(
@@ -38,7 +38,7 @@ class Profile extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // 👩 Female avatar with border & shadow
+                  
                     Container(
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
@@ -99,7 +99,7 @@ class Profile extends StatelessWidget {
               ),
             ),
 
-            // 🧾 Profile details section
+        
             Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -131,7 +131,7 @@ class Profile extends StatelessWidget {
   }
 }
 
-// 🌿 Custom clipper for curved bottom edge
+
 class BottomCurveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {

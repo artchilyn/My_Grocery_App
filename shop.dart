@@ -134,7 +134,6 @@ class _ShopState extends State<Shop> {
     );
   }
 
-  // Builds a network image widget with loading and error handling
   Widget _buildNetworkImage(String url, {double? width, double? height}) {
     return SizedBox(
       width: width ?? 50,
@@ -147,9 +146,7 @@ class _ShopState extends State<Shop> {
           return const Center(child: CircularProgressIndicator(strokeWidth: 2));
         },
         errorBuilder: (context, error, stackTrace) {
-          // debug print so you can check console for reason of failure
-          // (e.g., DNS, blocked hotlink, CORS)
-          // ignore: avoid_print
+          
           print('Image load failed for $url -> $error');
           return Container(
             color: Colors.grey[200],
@@ -239,7 +236,7 @@ class _ShopState extends State<Shop> {
                     });
                     Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('$name added with automatic image ✅')));
+                        content: Text('$name added with automatic image ')));
                   },
                   child: const Text('Add')),
             ],

@@ -111,7 +111,7 @@ class _MyHomePageState extends State<MyHomePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // 🛍️ App Icon
+          
               Image.network(
                 'https://cdn-icons-png.flaticon.com/512/3081/3081559.png',
                 height: 200,

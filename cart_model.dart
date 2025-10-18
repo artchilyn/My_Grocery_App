@@ -6,7 +6,7 @@ class CartModel extends ChangeNotifier {
 
   List<Map<String, dynamic>> get items => _items;
 
-  /// Add item to the cart
+
   void addItem(Map<String, dynamic> item) {
     // Check if item already exists in the cart
     int existingIndex = _items.indexWhere((i) => i['name'] == item['name']);
@@ -18,7 +18,7 @@ class CartModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Remove an item by index
+
   void removeItem(int index) {
     if (index >= 0 && index < _items.length) {
       _items.removeAt(index);
@@ -26,7 +26,6 @@ class CartModel extends ChangeNotifier {
     }
   }
 
-  /// Calculate total price
   double get totalPrice {
     return _items.fold(
       0.0,
@@ -34,7 +33,7 @@ class CartModel extends ChangeNotifier {
     );
   }
 
-  /// Clear the entire cart
+
   void clearCart() {
     _items.clear();
     notifyListeners();

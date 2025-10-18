@@ -18,7 +18,7 @@ class Cart extends StatelessWidget {
       ),
       drawer: const AppDrawer(),
 
-      // 🧺 Body
+
       body: cart.items.isEmpty
           ? const Center(
               child: Text(
@@ -60,7 +60,6 @@ class Cart extends StatelessWidget {
               },
             ),
 
-      // 💰 Bottom Summary Bar
       bottomNavigationBar: Container(
         color: Colors.deepPurple.shade50,
         padding: const EdgeInsets.all(16),
@@ -89,7 +88,7 @@ class Cart extends StatelessWidget {
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                      content: Text('Checkout successful! ✅'),
+                      content: Text('Checkout successful! Thank you for your purchase.'),
                       duration: Duration(seconds: 2)),
                 );
                 cart.clearCart();

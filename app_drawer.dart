@@ -12,7 +12,7 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
-          // 🍎 Custom Curved Drawer Header
+         
           ClipPath(
             clipper: _WaveClipper(),
             child: DrawerHeader(
@@ -20,7 +20,7 @@ class AppDrawer extends StatelessWidget {
                 image: DecorationImage(
                   image: NetworkImage(
                     'https://images.unsplash.com/photo-1606787366850-de6330128bfc?auto=format&fit=crop&w=1200&q=80',
-                  ), // 🥦 Grocery-style background
+                  ), 
                   fit: BoxFit.cover,
                 ),
               ),
@@ -28,14 +28,14 @@ class AppDrawer extends StatelessWidget {
               padding: EdgeInsets.zero,
               child: Stack(
                 children: [
-                  // 🟣 Purple overlay for contrast
+                  
                   Container(
                     decoration: BoxDecoration(
                       color: Colors.green.withOpacity(0.4),
                     ),
                   ),
 
-                  // 🛒 App title + slogan
+                  
                   Positioned(
                     left: 20,
                     bottom: 20,
@@ -75,7 +75,6 @@ class AppDrawer extends StatelessWidget {
             ),
           ),
 
-          // 🛍️ Drawer Menu Items
           ListTile(
             leading: const Icon(Icons.store, color: Colors.deepPurple),
             title: const Text('Shop'),
@@ -107,7 +106,7 @@ class AppDrawer extends StatelessWidget {
   }
 }
 
-// 🌊 Custom Wave Shape for Drawer Header
+
 class _WaveClipper extends CustomClipper<Path> {
   @override
   Path getClip(Size size) {
